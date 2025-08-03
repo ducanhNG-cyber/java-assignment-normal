@@ -44,6 +44,10 @@ public class Student {
         this.course = course;
     }
 
+    public String getKeyCount() {
+        return getStudentName() + "|" + getSemester() + "|" + getCourse();
+    }
+
     @Override
     public String toString() {
         return studentName + "," + semester + "," + course;
