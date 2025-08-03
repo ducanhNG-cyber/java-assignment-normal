@@ -6,12 +6,15 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author NguyenDucAnh
  */
-public class StudentList extends ArrayList<Student> implements IStudent {
+public class StudentList extends ArrayList<Student> implements IStudent, IProcess {
 
     public void addStudent(Student student) {
 
@@ -52,7 +55,7 @@ public class StudentList extends ArrayList<Student> implements IStudent {
 
     @Override
     public StudentList sortStudentFinded() {
-        
+
         Student target = findStudent();
         if (target == null) {
             System.out.println("Student name is not existed!");
@@ -72,16 +75,52 @@ public class StudentList extends ArrayList<Student> implements IStudent {
 
     @Override
     public void report() {
+        HashMap<String, Integer> countCourse = new HashMap<>();
+        for (Student s : this) {
+            String key = s.getKey();
+            countCourse.put(key, countCourse.getOrDefault(key, 0) + 1);
+        }
 
+        List<Map.Entry<String, Integer>> sortedList = new ArrayList<>(countCourse.entrySet());
+        sortedList.sort(Map.Entry.comparingByKey());
+
+        for (Map.Entry<String, Integer> e : sortedList) {
+            System.out.println(e.getKey() + "|" + e.getValue());
+        }
     }
 
     @Override
-    public Student deleteStudent(int index) {
-        return null;
+    public void deleteStudent() {
+
+        StudentList matching = new StudentList();
+        for (Student s : this) {
+            matching.addStudent(s);
+        }
+
+        displayMatching(matching);
+
+        int choice = 2;
+        Student student = matching.get(choice - 1);
+
+        this.remove(student);
     }
 
     @Override
-    public Student updateStudent(int index) {
-        return null;
+    public void updateStudent() {
+
+    }
+
+    private void displayMatching(StudentList matched) {
+        int index = 1;
+        for (Student s : matched) {
+            System.out.println("%d. %s".formatted(index, s.getKey()));
+            index++;
+        }
+    }
+
+    public void display() {
+        for (Student s : this) {
+            System.out.println(s.toString());
+        }
     }
 }

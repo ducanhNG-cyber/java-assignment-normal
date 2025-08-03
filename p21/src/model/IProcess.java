@@ -8,14 +8,9 @@ package model;
  *
  * @author NguyenDucAnh
  */
-public interface IStudent {
+public interface IProcess {
 
-    public Student createStudent();
+    public void deleteStudent();
 
-    public Student findStudent();
-
-    public StudentList sortStudentFinded();
-
-    public void report();
-
+    public void updateStudent();
 }

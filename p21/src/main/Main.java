@@ -4,17 +4,26 @@
  */
 package main;
 
+import controller.StudentController;
+
 /**
  *
  * @author NguyenDucAnh
  */
 public class Main {
 
+    private StudentController controller = new StudentController();
+    
+    private void runScript(){
+        controller.run();
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        new Main().runScript();
     }
     
 }
