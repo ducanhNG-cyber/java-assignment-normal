@@ -9,6 +9,7 @@ import model.Course;
 import model.Semester;
 import model.Student;
 import model.StudentList;
+import utils.InputHandle;
 import view.ProgramView;
 
 /**
@@ -20,20 +21,22 @@ public class StudentController {
     private StudentList studentList = new StudentList();
     private ProgramView view = new ProgramView();
     private Scanner scanner = new Scanner(System.in);
-    
+    private InputHandle inputHandle = new InputHandle();
+
     public void run() {
         addData();
         while (true) {
             getMenu();
-            System.out.print("Enter choice: ");
-            int choice = scanner.nextInt();
+            int choice = inputHandle.getUserLimitChoice("Enter choice: ", 1, view.menu.length);
             switch (choice) {
                 case 1: // create
+                    studentList.create();
                     break;
                 case 2: // find and sort
+                    studentList.findAndSort();
                     break;
                 case 3: // update/delete
-                    studentList.deleteStudent();
+                    case3();
                     break;
                 case 4: // report
                     //studentList.display();
@@ -43,6 +46,15 @@ public class StudentController {
                     System.out.println("Exited program!");
                     return;
             }
+        }
+    }
+
+    private void case3() {
+        boolean isChoiced = false;
+        if (isChoiced) { // true -> update
+            studentList.updateStudent();
+        } else { // false -> delete
+            studentList.deleteStudent();
         }
     }
 

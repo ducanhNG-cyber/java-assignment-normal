@@ -9,12 +9,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import utils.InputHandle;
 
 /**
  *
  * @author NguyenDucAnh
  */
 public class StudentList extends ArrayList<Student> implements IStudent, IProcess {
+
+    private InputHandle inputHandle = new InputHandle();
 
     public void addStudent(Student student) {
 
@@ -26,26 +29,58 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
         this.add(student);
     }
 
+    private Semester semesterInputting() {
+
+        System.out.println("Please only choice in list:");
+        display(Semester.values());
+        int choice = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+        while (Semester.fromSemester(choice) == null) {
+            System.err.println("Please only choice in list: ");
+            display(Semester.values());
+            choice = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+        }
+        return Semester.fromSemester(choice);
+    }
+
+    private Course courseInputting() {
+
+        System.out.println("Please only choice in list:");
+        display(Course.values());
+        int choice = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+        while (Semester.fromSemester(choice) == null) {
+            System.err.println("Please only choice in list: ");
+            display(Course.values());
+            choice = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+        }
+        return Course.fromCourse(choice);
+    }
+
     @Override
     public Student createStudent() {
 
-        String name = "";
-        Semester semester = null;
-        Course course = null;
+        String name = inputHandle.getNameValue("Enter student name: ");
+        Semester semester = semesterInputting();
+        Course course = courseInputting();
 
-        // create value for student object
         Student studentCreated = new Student(name, semester, course);
 
         return studentCreated;
     }
 
+    public void create() {
+        Student createdStudent = createStudent();
+        this.addStudent(createdStudent);
+        System.out.println("Created student succeed!");
+    }
+
     @Override
     public Student findStudent() {
 
-        String studentName = "";
+        String studentName = inputHandle.getNameValue("Enter student name: ");
         Student finding = null;
         for (Student s : this) {
-            if (s.getStudentName().equalsIgnoreCase(studentName)) {
+            if (s.getStudentName().toLowerCase()
+                    .equalsIgnoreCase(studentName.toLowerCase())) {
                 finding = s;
             }
         }
@@ -73,8 +108,16 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
         return matching;
     }
 
+    public void findAndSort() {
+        StudentList sorted = sortStudentFinded();
+        for (Student s : sorted) {
+            System.out.println(s.toString());
+        }
+    }
+
     @Override
     public void report() {
+
         HashMap<String, Integer> countCourse = new HashMap<>();
         for (Student s : this) {
             String key = s.getKey();
@@ -99,26 +142,64 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         displayMatching(matching);
 
-        int choice = 2;
+        int choice = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
         Student student = matching.get(choice - 1);
 
         this.remove(student);
+        System.out.println("Deleted student succeed!");
     }
 
     @Override
     public void updateStudent() {
 
+        StudentList matching = new StudentList();
+        for (Student s : this) {
+            matching.addStudent(s);
+        }
+
+        displayMatching(matching);
+
+        int choice = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
+        Student student = matching.get(choice - 1);
+
+        Semester newSemester = semesterInputting();
+        Course newCourse = courseInputting();
+
+        student.setSemester(newSemester);
+        student.setCourse(newCourse);
+        System.out.println("Updated student succeed!");
     }
 
     private void displayMatching(StudentList matched) {
+
         int index = 1;
         for (Student s : matched) {
-            System.out.println("%d. %s".formatted(index, s.getKey()));
+            String key = s.getStudentName() + "|" + s.getSemester() + "|" + s.getCourse();
+            System.out.println("%d. %s".formatted(index, key));
             index++;
         }
     }
 
-    public void display() {
+    private void display(Semester[] semester) {
+
+        int index = 1;
+        for (Semester s : semester) {
+            System.out.println("%d. %s".formatted(index, s.getTypeString()));
+            index++;
+        }
+    }
+
+    private void display(Course[] course) {
+
+        int index = 1;
+        for (Course c : course) {
+            System.out.println("%d. %s".formatted(index, c.getTypeString()));
+            index++;
+        }
+    }
+
+    private void display() {
+
         for (Student s : this) {
             System.out.println(s.toString());
         }
