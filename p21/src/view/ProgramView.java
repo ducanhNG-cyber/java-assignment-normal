@@ -15,14 +15,24 @@ public class ProgramView {
 
     public void menuView() {
 
-        System.out.println("welcome to student management".toUpperCase());
+        printPrompt(0, "welcome to student management".toUpperCase());
         int index = 1;
         for (String i : menu) {
-            System.out.println("%d. %s".formatted(index, i.toString()));
+            printPrompt(index, i);
             index++;
         }
 
         String msg = "(Please choose 1 to Create, 2 to Find and Sort, 3 to Update/Delete, 4 to Report and 5 to Exit program).";
-        System.out.println(msg.toString());
+        printPrompt(0, msg);
+    }
+
+    public void printPrompt(int number, String message) {
+        if (number == 0) {
+            System.out.println(message);
+        } else if (number == -1) {
+            System.err.println(message);
+        } else {
+            System.out.println("%d. %s".formatted(number, message));
+        }
     }
 }

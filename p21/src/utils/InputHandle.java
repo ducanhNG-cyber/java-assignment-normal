@@ -5,89 +5,103 @@
 package utils;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
  * @author NguyenDucAnh
  */
 public class InputHandle {
-
+    
     private Scanner scanner = new Scanner(System.in);
-
-    public String getNameValue(String message) {
-        while (true) {
-            System.out.print(message);
-            String regex = "^[a-zA-Z ]+$";
-            String value = scanner.nextLine().trim();
-
-            if (value.isEmpty()) {
-                System.err.println("This value cannot be empty!");
-                continue;
-            }
-
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(value);
-
-            if (matcher.matches()) {
-                return value;
-            } else {
-                System.err.println("Invalid format!(etc. Nguyen Van A)");
-            }
+    
+    private static final String NAME_REGEX = "^[a-zA-Z ]+$";
+    private static final String NUMBER_REGEX = "^[0-9]+$";
+    private static final String UPDATE_REGEX = "u";
+    private static final String DELETE_REGEX = "d";
+    
+    private void printPrompt(String message) {
+        if (message == null || message.isEmpty()) {
+            throw new IllegalArgumentException("Prompt message cannot be EMPTY!");
         }
-    }
-
-    public int getUserLimitChoice(String message, int min, int max) {
-        while (true) {
-            System.out.print(message);
-            String value = scanner.nextLine().trim();
-
-            if (value.isEmpty()) {
-                System.err.println("This value cannot be EMPTY!");
-                continue;
-            }
-
-            try {
-                int number = Integer.parseInt(value);
-                if (number <= 0) {
-                    System.err.println("This number must > 0!");
-                    continue;
-                }
-
-                if (number < min || number > max) {
-                    System.err.println("please input value in [%d, %d]".formatted(min, max));
-                    continue;
-                }
-
-                return number;
-            } catch (NumberFormatException e) {
-                System.err.println("This value must integer number!");
-            }
-        }
-    }
-
-    public boolean checkUD(String message) {
-        while (true) {
-            System.out.print(message);
-            String value = scanner.nextLine().trim();
-
-            if (value.isEmpty()) {
-                System.err.println("This value cannot be EMPTY!");
-                continue;
-            }
-            
-            if(value.equalsIgnoreCase("u")){
-                return true;
-            }
-            
-            if(value.equalsIgnoreCase("d")){
-                return false;
-            }
-            
-            System.err.println("Invalid value! please input update[U] or delete[D]:");
-        }
+        printPrompt(0,message);
     }
     
-
+    private boolean isValidName(String valueInputed) {
+        return valueInputed != null
+                && !valueInputed.isEmpty()
+                && valueInputed.matches(NAME_REGEX);
+    }
+    
+    public String promptForName(String message) {
+        String value;
+        do {
+            printPrompt(message);
+            value = scanner.nextLine().trim();
+            if (!isValidName(value)) {
+                printPrompt(-1, "Invalid input! Name must contain only letters and spaces.");
+            }
+        } while (!isValidName(value));
+        return value;
+    }
+    
+    private boolean isValidNumber(String valueInputed, int min, int max) {
+        return valueInputed != null
+                && !valueInputed.isEmpty()
+                && valueInputed.matches(NUMBER_REGEX)
+                && isBetween(valueInputed, min, max);
+    }
+    
+    private boolean isBetween(String valueInputed, int min, int max) {
+        int number = Integer.parseInt(valueInputed);
+        return number >= min && number <= max;
+    }
+    
+    public String getUserLimitChoice(String message, int min, int max) {
+        String value;
+        do {
+            printPrompt(message);
+            value = scanner.nextLine().trim();
+            if (!isValidNumber(value, min, max)) {
+                printPrompt(-1, "Invalid input! Number must between %d and %d".formatted(min, max));
+            }
+        } while (!isValidNumber(value, min, max));
+        return value;
+    }
+    
+    private boolean isBoolChoiceProcess(String valueInputed) {
+        return valueInputed.toLowerCase().equals(UPDATE_REGEX)
+                || valueInputed.toLowerCase().equals(DELETE_REGEX);
+    }
+    
+    public boolean getBoolChoice(String message) {
+        String value;
+        boolean setBool = false;
+        do {
+            printPrompt(message);
+            value = scanner.nextLine().trim();
+            if (!isBoolChoiceProcess(value)) {
+                printPrompt(-1, "Invalid input! Value must 'u[U]' or d[D]!");
+            }
+            
+            if (value.toLowerCase().equals(UPDATE_REGEX)) {
+                setBool = true;
+            }
+            
+            if (value.toLowerCase().equals(DELETE_REGEX)) {
+                setBool = false;
+            }
+            
+        } while (!isBoolChoiceProcess(value));
+        return setBool;
+    }
+    
+    private void printPrompt(int number, String message) {
+        if (number == 0) {
+            System.out.println(message);
+        } else if (number == -1) {
+            System.err.println(message);
+        } else {
+            System.out.println("%d. %s".formatted(number, message));
+        }
+    }
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import utils.InputHandle;
+import view.ProgramView;
 
 /**
  *
@@ -18,11 +19,12 @@ import utils.InputHandle;
 public class StudentList extends ArrayList<Student> implements IStudent, IProcess {
 
     private InputHandle inputHandle = new InputHandle();
+    private ProgramView view = new ProgramView();
 
     public void addStudent(Student student) {
 
         if (student == null) {
-            System.out.println("This student value is null!");
+            view.printPrompt(0, "This student value is null!");
             return;
         }
 
@@ -31,26 +33,30 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
     private Semester semesterInputting() {
 
-        System.out.println("Please only choice in list:");
+        view.printPrompt(0, "Please only choice in list:");
         display(Semester.values());
-        int choice = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+        String choices = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+        int choice = Integer.parseInt(choices);
         while (Semester.fromSemester(choice) == null) {
-            System.err.println("Please only choice in list: ");
+            view.printPrompt(-1, "Please only choice in list:");
             display(Semester.values());
-            choice = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+            choices = inputHandle.getUserLimitChoice("Enter choice[Semester]: ", 1, Semester.values().length);
+            choice = Integer.parseInt(choices);
         }
         return Semester.fromSemester(choice);
     }
 
     private Course courseInputting() {
 
-        System.out.println("Please only choice in list:");
+        view.printPrompt(0, "Please only choice in list:");
         display(Course.values());
-        int choice = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+        String choices = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+        int choice = Integer.parseInt(choices);
         while (Semester.fromSemester(choice) == null) {
-            System.err.println("Please only choice in list: ");
+            view.printPrompt(-1, "Please only choice in list:");
             display(Course.values());
-            choice = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+            choices = inputHandle.getUserLimitChoice("Enter choice[Course]: ", 1, Course.values().length);
+            choice = Integer.parseInt(choices);
         }
         return Course.fromCourse(choice);
     }
@@ -58,7 +64,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
     @Override
     public Student createStudent() {
 
-        String name = inputHandle.getNameValue("Enter student name: ");
+        String name = inputHandle.promptForName("Enter student name: ");
         Semester semester = semesterInputting();
         Course course = courseInputting();
 
@@ -70,13 +76,13 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
     public void create() {
         Student createdStudent = createStudent();
         this.addStudent(createdStudent);
-        System.out.println("Created student succeed!");
+        view.printPrompt(0, "Created student succeed!");
     }
 
     @Override
     public Student findStudent() {
 
-        String studentName = inputHandle.getNameValue("Enter student name: ");
+        String studentName = inputHandle.promptForName("Enter student name: ");
         Student finding = null;
         for (Student s : this) {
             if (s.getStudentName().toLowerCase()
@@ -93,7 +99,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         Student target = findStudent();
         if (target == null) {
-            System.out.println("Student name is not existed!");
+            view.printPrompt(0, "Student name is not existed!");
             return new StudentList();
         }
 
@@ -111,7 +117,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
     public void findAndSort() {
         StudentList sorted = sortStudentFinded();
         for (Student s : sorted) {
-            System.out.println(s.toString());
+            view.printPrompt(0, s.toString());
         }
     }
 
@@ -128,7 +134,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
         sortedList.sort(Map.Entry.comparingByKey());
 
         for (Map.Entry<String, Integer> e : sortedList) {
-            System.out.println(e.getKey() + "|" + e.getValue());
+            view.printPrompt(0, e.getKey() + "|" + e.getValue());
         }
     }
 
@@ -142,11 +148,11 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         displayMatching(matching);
 
-        int choice = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
+        String choices = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
+        int choice = Integer.parseInt(choices);
         Student student = matching.get(choice - 1);
-
         this.remove(student);
-        System.out.println("Deleted student succeed!");
+        view.printPrompt(0, "Deleted student succeed!");
     }
 
     @Override
@@ -159,7 +165,8 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         displayMatching(matching);
 
-        int choice = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
+        String choices = inputHandle.getUserLimitChoice("Choice student number: ", 1, matching.size());
+        int choice = Integer.parseInt(choices);
         Student student = matching.get(choice - 1);
 
         Semester newSemester = semesterInputting();
@@ -167,7 +174,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         student.setSemester(newSemester);
         student.setCourse(newCourse);
-        System.out.println("Updated student succeed!");
+        view.printPrompt(0, "Updated student succeed!");
     }
 
     private void displayMatching(StudentList matched) {
@@ -175,7 +182,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
         int index = 1;
         for (Student s : matched) {
             String key = s.getStudentName() + "|" + s.getSemester() + "|" + s.getCourse();
-            System.out.println("%d. %s".formatted(index, key));
+            view.printPrompt(index, key);
             index++;
         }
     }
@@ -184,7 +191,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         int index = 1;
         for (Semester s : semester) {
-            System.out.println("%d. %s".formatted(index, s.getTypeString()));
+            view.printPrompt(index, s.getTypeString());
             index++;
         }
     }
@@ -193,7 +200,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
 
         int index = 1;
         for (Course c : course) {
-            System.out.println("%d. %s".formatted(index, c.getTypeString()));
+            view.printPrompt(index, c.getTypeString());
             index++;
         }
     }
@@ -201,7 +208,7 @@ public class StudentList extends ArrayList<Student> implements IStudent, IProces
     private void display() {
 
         for (Student s : this) {
-            System.out.println(s.toString());
+            view.printPrompt(0, s.toString());
         }
     }
 }

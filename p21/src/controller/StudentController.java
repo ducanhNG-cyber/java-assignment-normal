@@ -20,14 +20,14 @@ public class StudentController {
 
     private StudentList studentList = new StudentList();
     private ProgramView view = new ProgramView();
-    private Scanner scanner = new Scanner(System.in);
     private InputHandle inputHandle = new InputHandle();
 
     public void run() {
         addData();
         while (true) {
             getMenu();
-            int choice = inputHandle.getUserLimitChoice("Enter choice: ", 1, view.menu.length);
+            String choices = inputHandle.getUserLimitChoice("Enter choice: ", 1, view.menu.length);
+            int choice = Integer.parseInt(choices);
             switch (choice) {
                 case 1: // create
                     studentList.create();
@@ -39,7 +39,6 @@ public class StudentController {
                     case3();
                     break;
                 case 4: // report
-                    //studentList.display();
                     studentList.report();
                     break;
                 case 5:
@@ -50,7 +49,7 @@ public class StudentController {
     }
 
     private void case3() {
-        boolean isChoiced = false;
+        boolean isChoiced = inputHandle.getBoolChoice("Please choice u for update, d for delete: ");
         if (isChoiced) { // true -> update
             studentList.updateStudent();
         } else { // false -> delete

@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Netbeans%2017/NewCodeJava/normal/lab-java/p21/src/controller/StudentController.java</file>
-            <file>file:/F:/Netbeans%2017/NewCodeJava/normal/lab-java/p21/src/main/Main.java</file>
-            <file>file:/F:/Netbeans%2017/NewCodeJava/normal/lab-java/p21/src/model/Student.java</file>
-            <file>file:/F:/Netbeans%2017/NewCodeJava/normal/lab-java/p21/src/model/StudentList.java</file>
+            <file>file:/E:/java-assignment-normal/p21/src/utils/InputHandle.java</file>
+            <file>file:/E:/java-assignment-normal/p21/src/model/StudentList.java</file>
+            <file>file:/E:/java-assignment-normal/p21/src/view/ProgramView.java</file>
+            <file>file:/E:/java-assignment-normal/p21/src/main/Main.java</file>
+            <file>file:/E:/java-assignment-normal/p21/src/controller/StudentController.java</file>
         </group>
     </open-files>
 </project-private>
